@@ -60,9 +60,9 @@ function! s:stringize_options(opts) abort
 endfunction
 
 function! s:build_extra_options() abort
-    let opts = copy(g:clang_format#style_options)
-    if has_key(g:clang_format#filetype_style_options, &ft)
-        call extend(opts, g:clang_format#filetype_style_options[&ft])
+    let opts = copy(g:c_format#style_options)
+    if has_key(g:swift_format#filetype_style_options, &ft)
+        call extend(opts, g:swift_format#filetype_style_options[&ft])
     endif
 
     let extra_options = s:stringize_options(opts)
@@ -76,7 +76,7 @@ endfunction
 function! s:make_style_options() abort
     let extra_options = s:build_extra_options()
     return printf("{BasedOnStyle: %s, IndentWidth: %d, UseTab: %s%s}",
-                        \ g:clang_format#code_style,
+                        \ g:swift_format#code_style,
                         \ (exists('*shiftwidth') ? shiftwidth() : &l:shiftwidth),
                         \ &l:expandtab==1 ? 'false' : 'true',
                         \ extra_options)
@@ -88,30 +88,25 @@ function! s:success(result) abort
 endfunction
 
 function! s:error_message(result) abort
-    echoerr 'clang-format has failed to format.'
-    if a:result =~# '^YAML:\d\+:\d\+: error: unknown key '
-        echohl ErrorMsg
-        for l in split(a:result, "\n")[0:1]
-            echomsg l
-        endfor
-        echohl None
-    endif
+    echoerr 'swift-format has failed to format.'
+    echomsg a:result
+    "if a:result =~# '^YAML:\d\+:\d\+: error: unknown key '
+    "    echohl ErrorMsg
+    "    for l in split(a:result, "\n")[0:1]
+    "        echomsg l
+    "    endfor
+    "    echohl None
+    "endif
 endfunction
 
-function! clang_format#get_version() abort
+function! swift_format#get_version() abort
     if &shell =~# 'csh$' && executable('/bin/bash')
         let shell_save = &shell
         set shell=/bin/bash
     endif
     try
-        let version_output = s:system(s:shellescape(g:clang_format#command).' --version 2>&1')
-        if stridx(version_output, 'NPM') != -1
-            " Note:
-            " When clang-format is installed with npm, version string is changed (#39).
-            return matchlist(version_output, 'NPM version \d\+\.\d\+\.\(\d\)\(\d\+\)')[1:2]
-        else
-            return matchlist(version_output, '\(\d\+\)\.\(\d\+\)')[1:2]
-        endif
+        let version_output = s:system(s:shellescape(g:swift_format#command).' --version 2>&1')
+        return matchlist(version_output, '\(\d\+\)\.\(\d\+\).\(\d\+\)')[1:3]
     finally
         if exists('l:shell_save')
             let &shell = shell_save
@@ -119,23 +114,23 @@ function! clang_format#get_version() abort
     endtry
 endfunction
 
-function! clang_format#is_invalid() abort
+function! swift_format#is_invalid() abort
     if !exists('s:command_available')
-        if !executable(g:clang_format#command)
+        if !executable(g:swift_format#command)
             return 1
         endif
         let s:command_available = 1
     endif
 
     if !exists('s:version')
-        let v = clang_format#get_version()
+        let v = swift_format#get_version()
         if len(v) < 2
             " XXX: Give up checking version
             return 0
         endif
-        if v[0] < 3 || (v[0] == 3 && v[1] < 4)
-            return 2
-        endif
+        " if v[0] < 3 || (v[0] == 3 && v[1] < 4)
+        "     return 2
+        " endif
         let s:version = v
     endif
 
@@ -143,11 +138,12 @@ function! clang_format#is_invalid() abort
 endfunction
 
 function! s:verify_command() abort
-    let invalidity = clang_format#is_invalid()
+    let invalidity = swift_format#is_invalid()
     if invalidity == 1
-        echoerr "clang-format is not found. check g:clang_format#command."
+        echoerr "swift-format is not found. check g:swift_format#command."
     elseif invalidity == 2
-        echoerr 'clang-format 3.3 or earlier is not supported for the lack of aruguments'
+        " TODO ver check
+        echoerr 'swift-format 3.3 or earlier is not supported for the lack of aruguments'
     endif
 endfunction
 
@@ -179,58 +175,59 @@ function! s:getg(name, default) abort
     endif
 endfunction
 
-let g:clang_format#command = s:getg('clang_format#command', 'clang-format')
-let g:clang_format#extra_args = s:getg('clang_format#extra_args', "")
-if type(g:clang_format#extra_args) == type([])
-    let g:clang_format#extra_args = join(g:clang_format#extra_args, " ")
+let g:swift_format#command = s:getg('swift_format#command', 'swift-format')
+let g:swift_format#extra_args = s:getg('swift_format#extra_args', "")
+if type(g:swift_format#extra_args) == type([])
+    let g:swift_format#extra_args = join(g:swift_format#extra_args, " ")
 endif
 
-let g:clang_format#code_style = s:getg('clang_format#code_style', 'google')
-let g:clang_format#style_options = s:getg('clang_format#style_options', {})
-let g:clang_format#filetype_style_options = s:getg('clang_format#filetype_style_options', {})
+let g:swift_format#code_style = s:getg('swift_format#code_style', 'google')
+let g:swift_format#style_options = s:getg('swift_format#style_options', {})
+let g:swift_format#filetype_style_options = s:getg('swift_format#filetype_style_options', {})
 
-let g:clang_format#detect_style_file = s:getg('clang_format#detect_style_file', 1)
-let g:clang_format#enable_fallback_style = s:getg('clang_format#enable_fallback_style', 1)
+let g:swift_format#detect_style_file = s:getg('swift_format#detect_style_file', 1)
+let g:swift_format#enable_fallback_style = s:getg('swift_format#enable_fallback_style', 1)
 
-let g:clang_format#auto_format = s:getg('clang_format#auto_format', 0)
-let g:clang_format#auto_format_on_insert_leave = s:getg('clang_format#auto_format_on_insert_leave', 0)
-let g:clang_format#auto_formatexpr = s:getg('clang_format#auto_formatexpr', 0)
+let g:swift_format#auto_format = s:getg('swift_format#auto_format', 0)
+let g:swift_format#auto_format_on_insert_leave = s:getg('swift_format#auto_format_on_insert_leave', 0)
+let g:swift_format#auto_formatexpr = s:getg('swift_format#auto_formatexpr', 0)
 " }}}
 
 " format codes {{{
 function! s:detect_style_file() abort
     let dirname = fnameescape(expand('%:p:h'))
-    return findfile('.clang-format', dirname.';') != '' || findfile('_clang-format', dirname.';') != ''
+    return findfile('.swift-format', dirname.';') != '' || findfile('_swift-format', dirname.';') != ''
 endfunction
 
-function! clang_format#format(line1, line2) abort
-    let args = printf(' -lines=%d:%d', a:line1, a:line2)
-    if ! (g:clang_format#detect_style_file && s:detect_style_file())
-        if g:clang_format#enable_fallback_style
-            let args .= ' ' . s:shellescape(printf('-style=%s', s:make_style_options())) . ' '
-        else
-            let args .= ' -fallback-style=none '
-        endif
-    else
-        let args .= ' -style=file '
-    endif
+function! swift_format#format(line1, line2) abort
+    let args = ''
+    " let args = printf(' -lines=%d:%d', a:line1, a:line2)
+    " if ! (g:swift_format#detect_style_file && s:detect_style_file())
+    "     if g:swift_format#enable_fallback_style
+    "         let args .= ' ' . s:shellescape(printf('-style=%s', s:make_style_options())) . ' '
+    "     else
+    "         let args .= ' -fallback-style=none '
+    "     endif
+    " else
+    "     let args .= ' -style=file '
+    " endif
     let filename = expand('%')
     if filename !=# ''
-        let args .= printf('-assume-filename=%s ', s:shellescape(escape(filename, " \t")))
+        let args .= printf('--assume-filename=%s ', s:shellescape(escape(filename, " \t")))
     endif
-    let args .= g:clang_format#extra_args
-    let clang_format = printf('%s %s --', s:shellescape(g:clang_format#command), args)
+    let args .= g:swift_format#extra_args
+    let swift_format = printf('%s %s ', s:shellescape(g:swift_format#command), args)
     let source = join(getline(1, '$'), "\n")
-    return s:system(clang_format, source)
+    return s:system(swift_format, source)
 endfunction
 " }}}
 
 " replace buffer {{{
-function! clang_format#replace(line1, line2, ...) abort
+function! swift_format#replace(line1, line2, ...) abort
     call s:verify_command()
 
     let pos_save = a:0 >= 1 ? a:1 : getpos('.')
-    let formatted = clang_format#format(a:line1, a:line2)
+    let formatted = swift_format#format(a:line1, a:line2)
     if !s:success(formatted)
         call s:error_message(formatted)
         return
@@ -256,13 +253,13 @@ function! s:format_inserted_area() abort
     let pos = getpos('.')
     " When in the same buffer
     if &modified && ! empty(s:pos_on_insertenter) && s:pos_on_insertenter[0] == pos[0]
-        call clang_format#replace(s:pos_on_insertenter[1], line('.'))
+        call swft_format#replace(s:pos_on_insertenter[1], line('.'))
         let s:pos_on_insertenter = []
     endif
 endfunction
 
-function! clang_format#enable_format_on_insert() abort
-    augroup plugin-clang-format-auto-format-insert
+function! swift_format#enable_format_on_insert() abort
+    augroup plugin-swift-format-auto-format-insert
         autocmd! * <buffer>
         autocmd InsertEnter <buffer> let s:pos_on_insertenter = getpos('.')
         autocmd InsertLeave <buffer> call s:format_inserted_area()
@@ -271,25 +268,25 @@ endfunction
 " }}}
 
 " toggle auto formatting {{{
-function! clang_format#toggle_auto_format() abort
-    let g:clang_format#auto_format = !g:clang_format#auto_format
-    if g:clang_format#auto_format
-        echo 'Auto clang-format: enabled'
+function! swift_format#toggle_auto_format() abort
+    let g:swift_format#auto_format = !g:swift_format#auto_format
+    if g:swift_format#auto_format
+        echo 'Auto swift-format: enabled'
     else
-        echo 'Auto clang-format: disabled'
+        echo 'Auto swift-format: disabled'
     endif
 endfunction
 " }}}
 
 " enable auto formatting {{{
-function! clang_format#enable_auto_format() abort
-    let g:clang_format#auto_format = 1
+function! swift_format#enable_auto_format() abort
+    let g:swift_format#auto_format = 1
 endfunction
 " }}}
 
 " disable auto formatting {{{
-function! clang_format#disable_auto_format() abort
-    let g:clang_format#auto_format = 0
+function! swift_format#disable_auto_format() abort
+    let g:swift_format#auto_format = 0
 endfunction
 " }}}
 let &cpo = s:save_cpo

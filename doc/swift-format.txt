@@ -1,25 +1,25 @@
-*clang-format.txt*                 Format C, C++, Objective-C using clang-format
+*swift-format.txt*                 Format C, C++, Objective-C using swift-format
 
 Author : rhysd <lin90162@yahoo.co.jp>
 
-CONTENTS         *vim-clang-format-contents*
+CONTENTS         *vim-swift-format-contents*
 
-Introduction     |vim-clang-format-introduction|
-Usage            |vim-clang-format-usage|
-Install          |vim-clang-format-install|
-Dependency       |vim-clang-format-dependency|
-Commands         |vim-clang-format-commands|
-Mappings         |vim-clang-format-mappings|
-Functions        |vim-clang-format-functions|
-Variables        |vim-clang-format-variables|
-Setup Example    |vim-clang-format-setup-example|
-Repository Page  |vim-clang-format-repository-page|
-License          |vim-clang-format-license|
+Introduction     |vim-swift-format-introduction|
+Usage            |vim-swift-format-usage|
+Install          |vim-swift-format-install|
+Dependency       |vim-swift-format-dependency|
+Commands         |vim-swift-format-commands|
+Mappings         |vim-swift-format-mappings|
+Functions        |vim-swift-format-functions|
+Variables        |vim-swift-format-variables|
+Setup Example    |vim-swift-format-setup-example|
+Repository Page  |vim-swift-format-repository-page|
+License          |vim-swift-format-license|
 
 ==============================================================================
-INTRODUCTION                                     *vim-clang-format-introduction*
+INTRODUCTION                                     *vim-swift-format-introduction*
 
-*vim-clang-format* formats your C, C++ and Objective-C code with specific coding
+*vim-swift-format* formats your C, C++ and Objective-C code with specific coding
 style using clang.  Following filetypes are supported.
 
 * c
@@ -37,7 +37,7 @@ http://gifzo.net/BIteGJ9Vasg.gif
 
 
 ==============================================================================
-USAGE                                                   *vim-clang-format-usage*
+USAGE                                                   *vim-swift-format-usage*
 
 |:ClangFormat| command is available.  If you use it in normal mode, the whole
 code will be formatted.  If you use it in visual mode, the selected code will
@@ -45,19 +45,19 @@ be formatted.  It is more convenient to map |:ClangFormat| to your favorite key
 mapping in normal mode and visual mode.
 |'shiftwidth'| and |'expandtab'| are used for formatting.
 
-In addition, |<Plug>(operator-clang-format)| is an operator mapping to format
+In addition, |<Plug>(operator-swift-format)| is an operator mapping to format
 the |text-objects|.  It is also very useful for expert users.
 
 
 
 ==============================================================================
-DEPENDENCY                                         *vim-clang-format-dependency*
+DEPENDENCY                                         *vim-swift-format-dependency*
 
-|clang-format| (3.4 or later is required)
+|swift-format| (3.4 or later is required)
     http://clang.llvm.org/docs/ClangFormat.html
 
     Note:
-    clang-format 3.4 in Ubuntu 13.04 seems to be old.  Please use LLVM's
+    swift-format 3.4 in Ubuntu 13.04 seems to be old.  Please use LLVM's
     official apt repository.
     http://llvm.org/apt/
 
@@ -70,7 +70,7 @@ DEPENDENCY                                         *vim-clang-format-dependency*
 
 
 ==============================================================================
-INSTALL                                               *vim-clang-format-install*
+INSTALL                                               *vim-swift-format-install*
 
 Using Vim plugin package manager is recommended.  I use |neobundle| and |vundle|
 seems the most famous.
@@ -82,10 +82,10 @@ directory.  Vim config directory is usually $HOME/vimfiles on Windows or
 
 
 ==============================================================================
-COMMANDS                                             *vim-clang-format-commands*
+COMMANDS                                             *vim-swift-format-commands*
 
 :[range]ClangFormat                                               *:ClangFormat*
-        Format a entire current buffer with clang-format.  If [range] is
+        Format a entire current buffer with swift-format.  If [range] is
         given, |:ClangFormat| formats the range.  In visual mode, |:ClangFormat|
         formats the selected region with linewise way.
 
@@ -96,17 +96,17 @@ COMMANDS                                             *vim-clang-format-commands*
 
 
 ==============================================================================
-MAPPINGS                                             *vim-clang-format-mappings*
+MAPPINGS                                             *vim-swift-format-mappings*
 
-<Plug>(operator-clang-format)                    *<Plug>(operator-clang-format)*
+<Plug>(operator-swift-format)                    *<Plug>(operator-swift-format)*
 
-    Operator mapping to format source code with clang-format.  To use this
+    Operator mapping to format source code with swift-format.  To use this
     mapping, |operator-user| is required.
 
 
 
 ==============================================================================
-FUNCTIONS                                           *vim-clang-format-functions*
+FUNCTIONS                                           *vim-swift-format-functions*
 
 clang_format#replace({start_line}, {last_line})         *clang_format#replace()*
 
@@ -120,12 +120,12 @@ clang_format#format({start_line}, {last_line})           *clang_format#format()*
 
 
 ==============================================================================
-VARIABLES                                           *vim-clang-format-variables*
+VARIABLES                                           *vim-swift-format-variables*
 
 g:clang_format#command                                  *g:clang_format#command*
 
-    Name of clang-format command.
-    The default value is "clang-format".
+    Name of swift-format command.
+    The default value is "swift-format".
 
 g:clang_format#code_style                            *g:clang_format#code_style*
 
@@ -139,13 +139,13 @@ g:clang_format#style_options                      *g:clang_format#style_options*
     example, using {} in short if statement or not, use C++11 feature or not,
     access modifier offset and so on.  This value is a |Dictionary| whose key
     and value are |String| or |Number|.
-    The key and the value are options passed to clang-format's -stryle option.
-    You can look up them by executing `clang-format -dump-config` command.  If
-    you want to know all of the keys and values, clang-format's documentation
+    The key and the value are options passed to swift-format's -stryle option.
+    You can look up them by executing `swift-format -dump-config` command.  If
+    you want to know all of the keys and values, swift-format's documentation
     and API documentation is useful.  In paticular, the following link is
     useful to know.
 
-    CLANG-FORMAT STYLE OPTIONS
+    swift-format STYLE OPTIONS
     http://clang.llvm.org/docs/ClangFormatStyleOptions.html
 
 g:clang_format#filetype_style_options
@@ -171,18 +171,18 @@ g:clang_format#filetype_style_options
 <
 g:clang_format#extra_args                            *g:clang_format#extra_args*
 
-    Extra arguments for clang-format.  This |String| value is passed to
-    clang-format directly.
+    Extra arguments for swift-format.  This |String| value is passed to
+    swift-format directly.
 
 g:clang_format#detect_style_file              *g:clang_format#detect_style_file*
 
-    When the value is 1, |vim-clang-format| automatically detects the style file
-    like .clang-format or _clang-format and applies the style to formatting.
+    When the value is 1, |vim-swift-format| automatically detects the style file
+    like .swift-format or _swift-format and applies the style to formatting.
     The default value is 1.
 
 g:clang_format#auto_format                          *g:clang_format#auto_format*
 
-    When the value is 1, |vim-clang-format| automatically formats a current
+    When the value is 1, |vim-swift-format| automatically formats a current
     buffer on saving the buffer.  Formatting is executed at |BufWritePre| event.
     The default value is 0.
 
@@ -195,21 +195,21 @@ g:clang_format#auto_format_on_insert_leave
 g:clang_format#auto_formatexpr		        *g:clang_format#auto_formatexpr*
 
     When the value is 1, 'formatexpr' option is set automatically in |c|, |cpp|
-    and |objc| codes.  Vim's format mappings (e.g. |gq|) get to use |clang-format|
+    and |objc| codes.  Vim's format mappings (e.g. |gq|) get to use |swift-format|
     to format. This option is not comptabile with Vim's `textwidth` feature. You
     must set `textwidth` to `0` when the `formatexpr` is set.
 
 g:clang_format#enable_fallback_style	  *g:clang_format#enable_fallback_style*
 
     When the value is 0, "-fallback-style=none" option is added on executing
-    clang-format command. It means that vim-clang-format does nothing when
-    ".clang-format" is not found.
+    swift-format command. It means that vim-swift-format does nothing when
+    ".swift-format" is not found.
     The default value is 1.
 
 
 
 ==============================================================================
-SETUP EXAMPLE                                   *vim-clang-format-setup-example*
+SETUP EXAMPLE                                   *vim-swift-format-setup-example*
 
 Below is an example for .vimrc.
 >
@@ -226,16 +226,16 @@ Below is an example for .vimrc.
     autocmd FileType c,cpp,objc nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
     autocmd FileType c,cpp,objc vnoremap <buffer><Leader>cf :ClangFormat<CR>
     " if you install vim-operator-user
-    autocmd FileType c,cpp,objc map <buffer><Leader>x <Plug>(operator-clang-format)
+    autocmd FileType c,cpp,objc map <buffer><Leader>x <Plug>(operator-swift-format)
   augroup END
 <
 
 
 ==============================================================================
-REPOSITORY PAGE                               *vim-clang-format-repository-page*
+REPOSITORY PAGE                               *vim-swift-format-repository-page*
 
-The latest version of |vim-clang-format| is available at
-https://github.com/rhysd/vim-clang-format
+The latest version of |vim-swift-format| is available at
+https://github.com/rhysd/vim-swift-format
 
 Contributions (pull requests) are welcome. None of them is too short.
 Especially, English check is very helpful because I'm poor at English :(
@@ -243,9 +243,9 @@ Especially, English check is very helpful because I'm poor at English :(
 
 
 ==============================================================================
-LICENSE                                               *vim-clang-format-license*
+LICENSE                                               *vim-swift-format-license*
 
-|vim-clang-format| is distributed under MIT license.
+|vim-swift-format| is distributed under MIT license.
 
   Copyright (c) 2013-2017 rhysd
 
